@@ -1,0 +1,21 @@
+{
+	"folders":
+	[
+		{
+			"file_exclude_patterns":
+			[
+				".DS_Store"
+			],
+			"folder_exclude_patterns":
+			[
+				".vim",
+				"quicklook_plugins",
+				"settings",
+				"home/.dotfiles/plugins",
+				"CC"
+			],
+			"follow_symlinks": true,
+			"path": "."
+		}
+	]
+}
