@@ -125,8 +125,6 @@ def main(argv=None):
     settings_dir = (os.path.realpath(os.path.expanduser(settings_dir))) # Expand the user and find the symlink target path
   elif (os.path.isdir(settings_dir)):
     settings_dir = (os.path.expanduser(settings_dir)) # Expand the user and find the symlink target path
-  elif (os.path.isdir(script_dir + "/Settings")):
-    settings_dir = script_dir + "/Settings"
   else:
     print "No Settings folder found in either ~/ or the script dir!"
     return
@@ -152,3 +150,4 @@ def main(argv=None):
 # http://www.artima.com/weblogs/viewpost.jsp?thread=4829
 if __name__ == "__main__":
   sys.exit(main())
+  pass
