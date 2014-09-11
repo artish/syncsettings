@@ -22,9 +22,6 @@ from lib.send2trash import send2trash # https://github.com/hsoft/send2trash
 
 mode = ""
 
-# Path for the script
-script_dir   = os.path.dirname(__file__)
-
 # Name of the settings file
 cfg_file = "sync_settings.json"
 
