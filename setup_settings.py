@@ -105,16 +105,6 @@ def main(argv=None):
   settings_dir = "~/Settings"
   settings_dir = os.path.expanduser(settings_dir)
   
-  # Get all sync setting files
-  cfg  = glob.glob('*/' + cfg_file)
-  cfg += glob.glob('*/*/' + cfg_file)
-  cfg += glob.glob('*/*/*/' + cfg_file)
-
-  # If there aren't any config files exit the script
-  if not(cfg):
-    print ("No %s files found!" % cfg_file)
-    return
-
   # Check if there is either a symlink or a dir ~/Settings
   # After that check if there is a Settings dir in the parent dir of the script
   # If none of these exist, exit the script
@@ -124,6 +114,16 @@ def main(argv=None):
     settings_dir = (os.path.expanduser(settings_dir)) # Expand the user and find the symlink target path
   else:
     print "No Settings folder found in either ~/ or the script dir!"
+    return
+
+  # Get all sync setting files
+  cfg  = glob.glob(settings_dir + '*/' + cfg_file)
+  cfg += glob.glob(settings_dir + '*/*/' + cfg_file)
+  cfg += glob.glob(settings_dir + '*/*/*/' + cfg_file)
+
+  # If there aren't any config files exit the script
+  if not(cfg):
+    print ("No %s files found!" % cfg_file)
     return
 
   #----------------------------------------------------------------------------#
