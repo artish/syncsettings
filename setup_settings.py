@@ -102,9 +102,9 @@ def symlink(cur, json, src, dst, title, overwrite_all=None):
   os.symlink(src, dst)
 
   # Print the symlink creation information
-  print "Creating SymLink: "
-  print "  Src: " + src
-  print "  Dst: " + dst + "\n"
+  # print "Creating SymLink: "
+  # print "  Src: " + src
+  # print "  Dst: " + dst + "\n"
 
   return overwrite_all
 
