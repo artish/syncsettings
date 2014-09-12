@@ -34,8 +34,8 @@ cfg_file = "sync_settings.json"
 # Creates a symlink from a file/path to a give path
 def symlink(cur, json, src, dst, title, overwrite_all=None):
 
-  if (title): 
-    print title
+  # if (title): 
+  #   print title
 
   # Grab the path from the json parent dir
   json = os.path.dirname(json)
@@ -46,7 +46,8 @@ def symlink(cur, json, src, dst, title, overwrite_all=None):
 
   if not any( [os.path.isfile(src), os.path.isdir(src), os.path.islink(src)] ):
 
-    print "ERROR: The source doesn't exist"
+    print "ERROR: The source doesnt exist"
+    print title
     print src
     print
     return
