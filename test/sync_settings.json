@@ -1,0 +1,15 @@
+{
+  "App": "Test",
+  "symlink": [
+    {
+      "title": "Test File",
+      "src"  : "testfile.txt",
+      "dst"  : "~/Desktop/testfile.txt"
+    },
+    {
+      "title": "Test Dir",
+      "src"  : "testdir",
+      "dst"  : "~/Desktop/testdir"
+    }
+  ]
+}
