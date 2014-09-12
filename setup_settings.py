@@ -142,7 +142,7 @@ def main(argv=None):
     cfg  = glob.glob(settings_dir + '*/' + cfg_file)
     cfg += glob.glob(settings_dir + '*/*/' + cfg_file)
     cfg += glob.glob(settings_dir + '*/*/*/' + cfg_file)
-    cfg += glob.glob(settings_dir + '*/*/*/*' + cfg_file)
+    cfg += glob.glob(settings_dir + '*/*/*/*/' + cfg_file)
   else:
     cfg = [settings_dir + '/test/' + cfg_file]
 
