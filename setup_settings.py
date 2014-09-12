@@ -178,8 +178,9 @@ def main(argv=None):
       for t in data["trash"]:
         trash(t)
 
-    for d in data["symlink"]:
-      overwrite_all = symlink(settings_dir, x, d["src"], d["dst"], d["title"], overwrite_all)
+    if "symlink" in data:
+      for d in data["symlink"]:
+        overwrite_all = symlink(settings_dir, x, d["src"], d["dst"], d["title"], overwrite_all)
 
 # Advanced main function call
 # http://www.artima.com/weblogs/viewpost.jsp?thread=4829
