@@ -21,7 +21,7 @@ from lib.send2trash import send2trash # https://github.com/hsoft/send2trash
 #==============================================================================#
 
 mode = ""
-mode = "test"
+# mode = "test"
 
 # Name of the settings file
 cfg_file = "sync_settings.json"
@@ -43,6 +43,13 @@ def symlink(cur, json, src, dst, title, overwrite_all=None):
   
   # Expand the paths to the current user
   dst = os.path.expanduser(dst)
+
+  if not any( [os.path.isfile(src), os.path.isdir(src), os.path.islink(src)] ):
+
+    print "ERROR: The source doesn't exist"
+    print src
+    print
+    return
 
   # If the target is an existing file or folder
   # Ask to overwrite it or to skip it
@@ -88,7 +95,7 @@ def symlink(cur, json, src, dst, title, overwrite_all=None):
   # And delete symlinks so they don't crowd the trashbin
   if (os.path.islink(dst)):
     os.unlink(dst)
-  elif any ([os.path.islink(dst), os.path.isdir(dst)]): 
+  elif any ([os.path.isfile(dst), os.path.isdir(dst)]): 
     send2trash(dst)
 
   # Create the symlink
