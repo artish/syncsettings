@@ -34,15 +34,11 @@ cfg_file = "sync_settings.json"
 # Creates a symlink from a file/path to a give path
 def symlink(cur, json, src, dst, title, overwrite_all=None):
 
-  abpath = os.path.dirname(json)
-  # print src
-  # print cur
-  # print abpath
+  json = os.path.dirname(json)
+  src = json + "/" + src
 
-  abpath = abpath.replace(cur, '')
-  print abpath
+  print src
 
-  print 
   return
 
   if (title): 
