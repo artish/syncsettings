@@ -21,6 +21,7 @@ from lib.send2trash import send2trash # https://github.com/hsoft/send2trash
 #==============================================================================#
 
 mode = ""
+mode = "test"
 
 # Name of the settings file
 cfg_file = "sync_settings.json"
@@ -57,7 +58,7 @@ def symlink(cur, json, src, dst, title, overwrite_all=None):
 
     # When overwrite_all is "y" or in testing mode
     # Overwrite the file
-    if any ( [overwrite_all, mode == "test"] ):
+    if any ( [overwrite_all] ):
 
       overwrite_all = 1
 
@@ -133,6 +134,7 @@ def main(argv=None):
   else:
     print "No Settings folder found in either ~/ or the script dir!"
     return
+
 
   # Get all sync setting files
   cfg  = glob.glob(settings_dir + '*/' + cfg_file)
