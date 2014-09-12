@@ -31,7 +31,18 @@ cfg_file = "sync_settings.json"
 
 # symlink(current directory, symlink source folder, symlink destination folder )
 # Creates a symlink from a file/path to a give path
-def symlink(cur, src, dst, title, overwrite_all=None):
+def symlink(cur, json, src, dst, title, overwrite_all=None):
+
+  abpath = os.path.dirname(json)
+  # print src
+  # print cur
+  # print abpath
+
+  abpath = abpath.replace(cur, '')
+  print abpath
+
+  print 
+  return
 
   if (title): 
     print title
@@ -146,7 +157,7 @@ def main(argv=None):
     json_data.close()
 
     for d in data["symlink"]:
-      overwrite_all = symlink(settings_dir, d["src"], d["dst"], d["title"], overwrite_all)
+      overwrite_all = symlink(settings_dir, x, d["src"], d["dst"], d["title"], overwrite_all)
 
 # Advanced main function call
 # http://www.artima.com/weblogs/viewpost.jsp?thread=4829
