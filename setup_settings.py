@@ -34,23 +34,19 @@ cfg_file = "sync_settings.json"
 # Creates a symlink from a file/path to a give path
 def symlink(cur, json, src, dst, title, overwrite_all=None):
 
-  json = os.path.dirname(json)
-  src = json + "/" + src
-
-  print src
-
-  return
-
   if (title): 
     print title
 
+  # Grab the path from the json parent dir
+  json = os.path.dirname(json)
+  src = json + "/" + src
+  
   # Expand the paths to the current user
   dst = os.path.expanduser(dst)
-  src = os.path.join(cur, src)
 
   # If the target is an existing file or folder
   # Ask to overwrite it or to skip it
-  if any( [os.path.isfile(dst), os.path.isdir(dst), os.path.islink(dst) ] ):
+  if any( [os.path.isfile(dst), os.path.isdir(dst), os.path.islink(dst)] ):
 
     # TODO 001: Remove this unecessary if condition
 
