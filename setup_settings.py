@@ -109,6 +109,14 @@ def symlink(cur, json, src, dst, title, overwrite_all=None):
 
   return overwrite_all
 
+# Moves given Objects to trash or unlinks symlinks
+def trash(dst):
+  
+  if any([os.path.isfile(dst), os.path.isdir(dst)]):
+    send2trash(dst)
+  elif os.path.islink(dst):
+    os.unlink(dst)
+
 #==============================================================================#
 # Main
 #==============================================================================#
@@ -164,6 +172,11 @@ def main(argv=None):
     json_data = open(x)
     data = json.load(json_data)
     json_data.close()
+
+    # Get the folders to trash if they are available
+    if "trash" in data:
+      for t in data["trash"]:
+        trash(t)
 
     for d in data["symlink"]:
       overwrite_all = symlink(settings_dir, x, d["src"], d["dst"], d["title"], overwrite_all)
