@@ -78,7 +78,11 @@ def symlink(cur, src, dst, title, overwrite_all=None):
       elif (prompt == "y"):
         pass # Overwrite only this file
 
-    # Trash the resulting destination file, dir or symlink
+  # Trash the resulting destination file or dir
+  # And delete symlinks so they don't crowd the trashbin
+  if (os.path.islink(dst)):
+    os.unlink(dst)
+  else: 
     send2trash(dst)
 
   # Create the symlink
