@@ -15,3 +15,5 @@ Not only will this secure this your app settings, it will also prevent nasty dup
 
   + Check if additional variables like "title" are given.     
     But don't require them like now
+
+  + Automatically get the folder of the the sync_settings json.
