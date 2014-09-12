@@ -138,6 +138,7 @@ def main(argv=None):
   cfg  = glob.glob(settings_dir + '*/' + cfg_file)
   cfg += glob.glob(settings_dir + '*/*/' + cfg_file)
   cfg += glob.glob(settings_dir + '*/*/*/' + cfg_file)
+  cfg += glob.glob(settings_dir + '*/*/*/*' + cfg_file)
 
   # If there aren't any config files exit the script
   if not(cfg):
