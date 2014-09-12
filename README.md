@@ -18,6 +18,12 @@ Not only will this secure this your app settings, it will also prevent nasty dup
 
   + Automatically get the folder of the the sync_settings json.
 
+  + Add Copy function for files that can't be symlinked
+
+## Code TODO:
+
   + TODO 001: Remove this unecessary if condition
 
   + TODO 002: Replace this with a walk function
+
+
