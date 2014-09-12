@@ -56,6 +56,8 @@ def symlink(cur, json, src, dst, title, overwrite_all=None):
   # Ask to overwrite it or to skip it
   if any( [os.path.isfile(dst), os.path.isdir(dst), os.path.islink(dst) ] ):
 
+    # TODO 001: Remove this unecessary if condition
+
     # When overwrite_all is "y" or in testing mode
     # Overwrite the file
     if any ( [overwrite_all] ):

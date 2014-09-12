@@ -17,3 +17,5 @@ Not only will this secure this your app settings, it will also prevent nasty dup
     But don't require them like now
 
   + Automatically get the folder of the the sync_settings json.
+
+  + TODO 001: Remove this unecessary if condition
