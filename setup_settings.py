@@ -88,7 +88,7 @@ def symlink(cur, json, src, dst, title, overwrite_all=None):
   # And delete symlinks so they don't crowd the trashbin
   if (os.path.islink(dst)):
     os.unlink(dst)
-  else: 
+  elif any ([os.path.islink(dst), os.path.isdir(dst)]): 
     send2trash(dst)
 
   # Create the symlink
