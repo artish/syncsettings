@@ -139,6 +139,7 @@ def main(argv=None):
   # Get all sync setting files
   # Or just the test folder in test mode
   if (mode != "test"):
+    # TODO 002: Replace this with a walk function
     cfg  = glob.glob(settings_dir + '*/' + cfg_file)
     cfg += glob.glob(settings_dir + '*/*/' + cfg_file)
     cfg += glob.glob(settings_dir + '*/*/*/' + cfg_file)
