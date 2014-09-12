@@ -21,6 +21,7 @@ from lib.send2trash import send2trash # https://github.com/hsoft/send2trash
 #==============================================================================#
 
 mode = ""
+# mode = "test"
 
 # Name of the settings file
 cfg_file = "sync_settings.json"
@@ -31,19 +32,35 @@ cfg_file = "sync_settings.json"
 
 # symlink(current directory, symlink source folder, symlink destination folder )
 # Creates a symlink from a file/path to a give path
-def symlink(cur, src, dst, overwrite_all=None):
+def symlink(cur, json, src, dst, title, overwrite_all=None):
 
+  # if (title): 
+  #   print title
+
+  # Grab the path from the json parent dir
+  json = os.path.dirname(json)
+  src = json + "/" + src
+  
   # Expand the paths to the current user
   dst = os.path.expanduser(dst)
-  src = os.path.join(cur, src)
+
+  if not any( [os.path.isfile(src), os.path.isdir(src), os.path.islink(src)] ):
+
+    print "ERROR: The source doesnt exist"
+    print title
+    print src
+    print
+    return
 
   # If the target is an existing file or folder
   # Ask to overwrite it or to skip it
-  if any( [os.path.isfile(dst), os.path.isdir(dst), os.path.islink(dst) ] ):
+  if any( [os.path.isfile(dst), os.path.isdir(dst), os.path.islink(dst)] ):
+
+    # TODO 001: Remove this unecessary if condition
 
     # When overwrite_all is "y" or in testing mode
     # Overwrite the file
-    if any ( [overwrite_all, mode == "test"] ):
+    if any ( [overwrite_all] ):
 
       overwrite_all = 1
 
@@ -75,18 +92,30 @@ def symlink(cur, src, dst, overwrite_all=None):
       elif (prompt == "y"):
         pass # Overwrite only this file
 
-    # Trash the resulting destination file, dir or symlink
+  # Trash the resulting destination file or dir
+  # And delete symlinks so they don't crowd the trashbin
+  if (os.path.islink(dst)):
+    os.unlink(dst)
+  elif any ([os.path.isfile(dst), os.path.isdir(dst)]): 
     send2trash(dst)
 
   # Create the symlink
   os.symlink(src, dst)
 
   # Print the symlink creation information
-  print "Creating SymLink: "
-  print "  Src: " + src
-  print "  Dst: " + dst + "\n"
+  # print "Creating SymLink: "
+  # print "  Src: " + src
+  # print "  Dst: " + dst + "\n"
 
   return overwrite_all
+
+# Moves given Objects to trash or unlinks symlinks
+def trash(dst):
+  
+  if any([os.path.isfile(dst), os.path.isdir(dst)]):
+    send2trash(dst)
+  elif os.path.islink(dst):
+    os.unlink(dst)
 
 #==============================================================================#
 # Main
@@ -104,7 +133,7 @@ def main(argv=None):
   # Path with the settings
   settings_dir = "~/Settings"
   settings_dir = os.path.expanduser(settings_dir)
-  
+
   # Check if there is either a symlink or a dir ~/Settings
   # After that check if there is a Settings dir in the parent dir of the script
   # If none of these exist, exit the script
@@ -117,9 +146,15 @@ def main(argv=None):
     return
 
   # Get all sync setting files
-  cfg  = glob.glob(settings_dir + '*/' + cfg_file)
-  cfg += glob.glob(settings_dir + '*/*/' + cfg_file)
-  cfg += glob.glob(settings_dir + '*/*/*/' + cfg_file)
+  # Or just the test folder in test mode
+  if (mode != "test"):
+    # TODO 002: Replace this with a walk function
+    cfg  = glob.glob(settings_dir + '*/' + cfg_file)
+    cfg += glob.glob(settings_dir + '*/*/' + cfg_file)
+    cfg += glob.glob(settings_dir + '*/*/*/' + cfg_file)
+    cfg += glob.glob(settings_dir + '*/*/*/*/' + cfg_file)
+  else:
+    cfg = [settings_dir + '/test/' + cfg_file]
 
   # If there aren't any config files exit the script
   if not(cfg):
@@ -138,10 +173,14 @@ def main(argv=None):
     data = json.load(json_data)
     json_data.close()
 
-    for d in data["symlink"]:
-      overwrite_all = symlink(settings_dir, d["src"], d["dst"], overwrite_all)
+    # Get the folders to trash if they are available
+    if "trash" in data:
+      for t in data["trash"]:
+        trash(t)
 
-
+    if "symlink" in data:
+      for d in data["symlink"]:
+        overwrite_all = symlink(settings_dir, x, d["src"], d["dst"], d["title"], overwrite_all)
 
 # Advanced main function call
 # http://www.artima.com/weblogs/viewpost.jsp?thread=4829
