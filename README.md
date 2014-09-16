@@ -7,8 +7,6 @@ Not only will this secure this your app settings, it will also prevent nasty dup
 
 ## TODO:
 
-  + Move the Settings into their own Repository away from the script
-
   + Add a setting where the symlink are added to a folder    
     Example in the After Effects Folder, where you already have a ton of preinstalled plugins and want to add onto these folders.
     `/Applications/Adobe\ After\ Effects\ CC\ 2014/Plug-ins`
