@@ -13,7 +13,8 @@ import glob
 import json
 
 # Custom Modules
-from lib.send2trash import send2trash  # https://github.com/hsoft/send2trash
+import click
+from send2trash import send2trash  # https://github.com/hsoft/send2trash
 
 #=============================================================================#
 # Global Variables
@@ -30,6 +31,7 @@ cfg_file = "sync_settings.json"
 #=============================================================================#
 
 
+@click.command()
 def cli():
     print "Hello World"
 
