@@ -30,6 +30,10 @@ cfg_file = "sync_settings.json"
 #=============================================================================#
 
 
+def cli():
+    print "Hello World"
+
+
 def symlink(cur, json, src, dst, title, overwrite_all=None):
 
     # Grab the path from the json parent dir
