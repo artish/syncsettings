@@ -27,6 +27,15 @@ Not only will this secure this your app settings, it will also prevent nasty dup
     deactivate
     ```
 
+  3. Install in the current pip    
+
+    \-\-editable makes sure the setup.py uses the current files and doesn't copies and duplicates all the working files.
+
+    ```shell
+    pip install --editable .
+    ```
+
+
 ### Requirements
 
 #### Load Requirements:
