@@ -7,3 +7,5 @@ virtpy/.Python
 virtpy/bin
 virtpy/lib
 virtpy/include
+
+SyncSettings.egg-info
