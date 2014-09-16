@@ -17,26 +17,10 @@ import click
 from send2trash import send2trash  # https://github.com/hsoft/send2trash
 
 #=============================================================================#
-# Global Variables
-#=============================================================================#
-
-mode = ""
-# mode = "test"
-
-# Name of the settings file
-cfg_file = "sync_settings.json"
-
-#=============================================================================#
 # Functions
 #=============================================================================#
 
-
-@click.command()
-def cli():
-    print "Hello World"
-
-
-def symlink(cur, json, src, dst, title, overwrite_all=None):
+def symlink(cur, json, src, dst, title, overwrite=False):
 
     # Grab the path from the json parent dir
     json = os.path.dirname(json)
@@ -67,13 +51,9 @@ def symlink(cur, json, src, dst, title, overwrite_all=None):
 
           # TODO 001: Remove this unecessary if condition
 
-          # When overwrite_all is "y" or in testing mode
+          # When overwrite is "y" or in testing mode
           # Overwrite the file
-            if any(overwrite_all):
-
-                overwrite_all = 1
-
-            else:
+            if not overwrite:
 
                 print "File " + dst + " already exists."
 
@@ -96,8 +76,9 @@ def symlink(cur, json, src, dst, title, overwrite_all=None):
                     prompt = raw_input("Overwrite (y/n/a): ")
 
                     if (prompt == "a"):
-                        overwrite_all = 1  # Overwrite All
+                        overwrite = True  # Overwrite All
                     elif (prompt == "n"):
+                        overwrite = False
                         return   # Exit
                     elif (prompt == "y"):
                         pass   # Overwrite only this file
@@ -117,7 +98,7 @@ def symlink(cur, json, src, dst, title, overwrite_all=None):
     # print "  Src: " + src
     # print "  Dst: " + dst + "\n"
 
-    return overwrite_all
+    return overwrite
 
 
 def trash(dst):
@@ -133,15 +114,13 @@ def trash(dst):
 # Main
 #=============================================================================#
 
-
-def main(argv=None):
-
-    #-------------------------------------------------------------------------#
-    # Variables
-    #-------------------------------------------------------------------------#
-
-    # If this is true all existing files will be overwriteen
-    overwrite_all = 0
+@click.command()
+@click.option('--test', is_flag=True, help="Testing Mode")
+@click.option('--cfg_file', default="sync_settings.json", 
+              help="Alternate name for the configuration file")
+@click.option('--overwrite', default=False, is_flag=True,
+              help="Overwrite all files")
+def cli(test, cfg_file, overwrite):
 
     # Path with the settings
     settings_dir = "~/Settings"
@@ -162,14 +141,14 @@ def main(argv=None):
 
       # Get all sync setting files
       # Or just the test folder in test mode
-    if (mode != "test"):
+    if test:
+        cfg = [settings_dir + '/test/' + cfg_file]
+    else:
         # TODO 002: Replace this with a walk function
         cfg = glob.glob(settings_dir + '*/' + cfg_file)
         cfg += glob.glob(settings_dir + '*/*/' + cfg_file)
         cfg += glob.glob(settings_dir + '*/*/*/' + cfg_file)
         cfg += glob.glob(settings_dir + '*/*/*/*/' + cfg_file)
-    else:
-        cfg = [settings_dir + '/test/' + cfg_file]
 
     # If there aren't any config files exit the script
     if not(cfg):
@@ -196,15 +175,10 @@ def main(argv=None):
         if "symlink" in data:
             for d in data["symlink"]:
 
-                overwrite_all = symlink(
+                overwrite = symlink(
                     settings_dir,
                     x,
                     d["src"], d["dst"],
                     d["title"],
-                    overwrite_all)
+                    overwrite)
 
-# Advanced main function call
-# http://www.artima.com/weblogs/viewpost.jsp?thread=4829
-if __name__ == "__main__":
-    sys.exit(main())
-    pass

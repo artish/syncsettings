@@ -3,8 +3,10 @@
 	[
 		{
 			"name": "Anaconda Python Builder",
+			"cmd": ["source", "./virtpy/bin/activate"],
+			"working_dir": ".",
 			"selector": "source.python",
-			"shell_cmd": "python -u \"$file\""
+			"shell_cmd": ". /virtpy/bin/activate; sync_settings; deactivate"
 		}
 	],
 	"folders":
