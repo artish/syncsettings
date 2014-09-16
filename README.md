@@ -5,6 +5,42 @@ This script will synchronize settings of all your apps in git repository.
 
 Not only will this secure this your app settings, it will also prevent nasty duplication synchronisation errors when synching settings via Dropbox for instance.
 
+## VirtualEnv Instructions
+
+### Setup:
+
+  1. Set up the virtual environment:    
+
+    ```shell
+    virtualenv virtpy
+    ```
+
+  2. Activate the virtual environment:
+
+    ```shell
+    . sync/bin/activate
+    ```
+    
+    To deactivate just run:    
+
+    ```shell
+    deactivate
+    ```
+
+### Requirements
+
+#### Load Requirements:
+  
+  ```shell
+  pip install -r ./requirements.txt
+  ```
+  
+#### Freeze Requirements:
+
+  ```shell
+  pip freeze -l > ./requirements.txt 
+  ```
+
 ## TODO:
 
   + Check if additional variables like "title" are given.     
