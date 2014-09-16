@@ -1,3 +1,11 @@
 .DS_STORE
 *.sublime-workspace
 *.pyc
+
+# Virtualenv
+virtpy/.Python
+virtpy/bin
+virtpy/lib
+virtpy/include
+
+SyncSettings.egg-info

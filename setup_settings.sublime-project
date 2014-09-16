@@ -1,4 +1,14 @@
 {
+	"build_systems":
+	[
+		{
+			"name": "Anaconda Python Builder",
+			"cmd": ["source", "./virtpy/bin/activate"],
+			"working_dir": ".",
+			"selector": "source.python",
+			"shell_cmd": ". /virtpy/bin/activate; sync_settings; deactivate"
+		}
+	],
 	"folders":
 	[
 		{
@@ -8,6 +18,9 @@
 			],
 			"folder_exclude_patterns":
 			[
+				"SyncSettings.egg-info",
+				"virtpy",
+				"lib",
 				".vim",
 				"quicklook_plugins",
 				"settings",
@@ -15,7 +28,11 @@
 				"CC"
 			],
 			"follow_symlinks": true,
-			"path": "."
+			"path": ".",
+			"settings":
+			{
+				"python_interpreter": "./virtpy/bin/python"
+			}
 		}
 	]
 }
