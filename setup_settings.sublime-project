@@ -2,10 +2,12 @@
 	"folders":
 	[
 		{
+
 			"file_exclude_patterns":
 			[
 				".DS_Store"
 			],
+
 			"folder_exclude_patterns":
 			[
 				"virtpy",
@@ -16,8 +18,15 @@
 				"home/.dotfiles/plugins",
 				"CC"
 			],
+
+			"path": ".",
+
 			"follow_symlinks": true,
-			"path": "."
+
+			// SublimePythonIDE
+			"settings": {
+        "python_interpreter": "./virtpy/bin/python"
+	    }
 		}
 	]
 }
