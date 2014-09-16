@@ -20,6 +20,8 @@ Not only will this secure this your app settings, it will also prevent nasty dup
 
   + Add Copy function for files that can't be symlinked
 
+  + Ignore Symlinks where the parent folder doesn't exist
+
 ## Code TODO:
 
   + TODO 001: Remove this unecessary if condition
