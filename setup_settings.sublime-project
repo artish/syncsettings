@@ -1,15 +1,26 @@
 {
+	"build_systems":
+	[
+		{
+			"name": "Anaconda Python Builder",
+			"selector": "source.python",
+			"shell_cmd": "python -u \"$file\""
+		}
+	],
 	"folders":
 	[
 		{
-
+			"SublimeLinter":
+			{
+				"@python": 2.7
+			},
 			"file_exclude_patterns":
 			[
 				".DS_Store"
 			],
-
 			"folder_exclude_patterns":
 			[
+				"SyncSettings.egg-info",
 				"virtpy",
 				"lib",
 				".vim",
@@ -18,15 +29,12 @@
 				"home/.dotfiles/plugins",
 				"CC"
 			],
-
-			"path": ".",
-
 			"follow_symlinks": true,
-
-			// SublimePythonIDE
-			"settings": {
-        "python_interpreter": "./virtpy/bin/python"
-	    }
+			"path": ".",
+			"settings":
+			{
+				"python_interpreter": "./virtpy/bin/python"
+			}
 		}
 	]
 }
