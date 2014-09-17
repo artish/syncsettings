@@ -168,31 +168,30 @@ def cli(test, cfg_file, overwrite, settings_dir):
     # Loop through the configuration files and create the symlinks
     for x in cfg:
 
-        # Load the data from the json files into data
+        # Load data from the json files and ignore invalid json files
+        data = ""
         json_data = open(x)
-        
         try:
             data = json.load(json_data)
-            json_data.close()
-        except ValueError:
-            errmsg("Faulty settings file JSON \n %s" % x)
-            json_data.close()
-            return
+        except ValueError, e:
+            errmsg("Faulty settings file JSON \n %s\n" % x)
+        json_data.close()
 
+        if data:
 
-        # Get the folders to trash if they are available
-        if "trash" in data:
-            for t in data["trash"]:
-                trash(t)
+            # Get the folders to trash if they are available
+            if "trash" in data:
+                for t in data["trash"]:
+                    trash(t)
 
-        if "symlink" in data:
-            for d in data["symlink"]:
+            if "symlink" in data:
+                for d in data["symlink"]:
 
-                overwrite = symlink(
-                    settings_dir,
-                    x,
-                    d["src"], d["dst"],
-                    d["title"],
-                    overwrite,
-                    test)
+                    overwrite = symlink(
+                        settings_dir,
+                        x,
+                        d["src"], d["dst"],
+                        d["title"],
+                        overwrite,
+                        test)
 
