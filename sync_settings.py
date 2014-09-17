@@ -11,6 +11,7 @@ import os
 import sys
 import glob
 import json
+import fnmatch
 
 # Custom Modules
 import click
@@ -98,6 +99,18 @@ def trash(dst):
     elif os.path.islink(dst):
         os.unlink(dst)
 
+
+def locate(src,pattern):
+
+    """Locate files matching a pattern in a folder and its subfolders"""
+
+    matches = []
+    for root, dirnames, filenames in os.walk(src):
+      for filename in fnmatch.filter(filenames, pattern):
+          matches.append(os.path.join(root, filename))
+
+    return matches
+
 #=============================================================================#
 # Main
 #=============================================================================#
@@ -129,16 +142,8 @@ def cli(test, cfg_file, overwrite):
         print "No Settings folder found in either ~/ or the script dir!"
         return
 
-    #   # Get all sync setting files
-    #   # Or just the test folder in test mode
-    # if test:
-    #     cfg = [settings_dir + '/test/' + cfg_file]
-    # else:
-    # TODO 002: Replace this with a walk function
-    cfg = glob.glob(settings_dir + '*/' + cfg_file)
-    cfg += glob.glob(settings_dir + '*/*/' + cfg_file)
-    cfg += glob.glob(settings_dir + '*/*/*/' + cfg_file)
-    cfg += glob.glob(settings_dir + '*/*/*/*/' + cfg_file)
+    # Locate all the config files in the given directory
+    cfg = locate(settings_dir,cfg_file)
 
     # If there aren't any config files exit the script
     if not(cfg):
