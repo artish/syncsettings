@@ -14,7 +14,6 @@ import json
 import fnmatch
 import errno
 
-
 # Custom Modules
 import click
 from send2trash import send2trash  # https://github.com/hsoft/send2trash
@@ -85,9 +84,8 @@ def symlink(cur, json, src, dst, title, overwrite=False, test=False):
         click.echo("  %s\n" % dst)
         return overwrite
 
-
     try:
-        # Trash the existing destination if available and symlink the source
+        # Trash the existing destination and symlink the source
         trash(dst)
         os.symlink(src, dst)
     except OSError as exception:
