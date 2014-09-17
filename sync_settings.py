@@ -26,19 +26,17 @@ def symlink(cur, json, src, dst, title, overwrite=False):
     json = os.path.dirname(json)
     src = json + "/" + src
 
-    # Expand the paths to the current user
     dst = os.path.expanduser(dst)
 
+    # Exit the application if the source doesn't exist
     if not any([
             os.path.isfile(src),
             os.path.isdir(src),
             os.path.islink(src)]
             ):
-
-        print "ERROR: The source doesnt exist"
-        print title
-        print src
-        print
+        click.echo("ERROR: The requested source doesnt exist",err)
+        click.echo(title)
+        click.echo(src)
         return
 
     # If the target is an existing file or folder
