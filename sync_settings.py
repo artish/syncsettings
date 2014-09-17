@@ -111,6 +111,12 @@ def locate(src,pattern):
 
     return matches
 
+def errmsg(msg):
+
+    """Nicely formated error message"""
+
+    click.echo(click.style("ERROR: %s" % msg, fg='red'), err=True)
+
 #=============================================================================#
 # Main
 #=============================================================================#
@@ -139,7 +145,7 @@ def cli(test, cfg_file, overwrite):
         # Expand the user and find the symlink target path
         settings_dir = (os.path.expanduser(settings_dir))
     else:
-        print "No Settings folder found in either ~/ or the script dir!"
+        errmsg("No Settings folder found in the home dir!")
         return
 
     # Locate all the config files in the given directory
