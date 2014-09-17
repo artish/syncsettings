@@ -35,9 +35,10 @@ def symlink(cur, json, src, dst, title, overwrite=False, test=False):
             os.path.isdir(src),
             os.path.islink(src)]
             ):
-        click.echo("The requested source doesnt exist",err)
-        click.echo(title)
-        click.echo(src)
+        click.echo()
+        errmsg("The requested source doesnt exist: %s" % title)
+        click.secho(src, fg="red")
+        click.echo()
         return
 
     # Prompt the User to either overwrite existing files or skip them
@@ -113,9 +114,9 @@ def locate(src,pattern):
 
 def errmsg(msg):
 
-    """Nicely formated error message"""
+    """Red error message with ERROR prefix"""
 
-    click.echo(click.style("ERROR: %s" % msg, fg='red'), err=True)
+    click.secho("ERROR: %s" % msg, fg='red', err=True)
 
 #=============================================================================#
 # Main
@@ -153,7 +154,7 @@ def cli(test, cfg_file, overwrite):
 
     # If there aren't any config files exit the script
     if not(cfg):
-        print ("No %s files found!" % cfg_file)
+        errmsg("No %s files found!" % cfg_file)
         return
 
     #-------------------------------------------------------------------------#
