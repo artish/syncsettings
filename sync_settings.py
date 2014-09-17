@@ -20,7 +20,7 @@ from send2trash import send2trash  # https://github.com/hsoft/send2trash
 # Functions
 #=============================================================================#
 
-def symlink(cur, json, src, dst, title, overwrite=False):
+def symlink(cur, json, src, dst, title, overwrite=False, test=False):
 
     # Grab the full source path from the json file and append the parent dir
     json = os.path.dirname(json)
@@ -75,6 +75,13 @@ def symlink(cur, json, src, dst, title, overwrite=False):
                     elif (prompt == "y"):
                         pass   # Overwrite only this file
 
+    if test:
+        click.echo("Creating a Symlink for the file: ")
+        click.echo("  %s" % src)
+        click.echo("  %s\n" % dst)
+        return overwrite
+
+
     # Trash the existing destination if available and symlink the source
     trash(dst)
     os.symlink(src, dst)
@@ -122,16 +129,16 @@ def cli(test, cfg_file, overwrite):
         print "No Settings folder found in either ~/ or the script dir!"
         return
 
-      # Get all sync setting files
-      # Or just the test folder in test mode
-    if test:
-        cfg = [settings_dir + '/test/' + cfg_file]
-    else:
-        # TODO 002: Replace this with a walk function
-        cfg = glob.glob(settings_dir + '*/' + cfg_file)
-        cfg += glob.glob(settings_dir + '*/*/' + cfg_file)
-        cfg += glob.glob(settings_dir + '*/*/*/' + cfg_file)
-        cfg += glob.glob(settings_dir + '*/*/*/*/' + cfg_file)
+    #   # Get all sync setting files
+    #   # Or just the test folder in test mode
+    # if test:
+    #     cfg = [settings_dir + '/test/' + cfg_file]
+    # else:
+    # TODO 002: Replace this with a walk function
+    cfg = glob.glob(settings_dir + '*/' + cfg_file)
+    cfg += glob.glob(settings_dir + '*/*/' + cfg_file)
+    cfg += glob.glob(settings_dir + '*/*/*/' + cfg_file)
+    cfg += glob.glob(settings_dir + '*/*/*/*/' + cfg_file)
 
     # If there aren't any config files exit the script
     if not(cfg):
@@ -163,5 +170,6 @@ def cli(test, cfg_file, overwrite):
                     x,
                     d["src"], d["dst"],
                     d["title"],
-                    overwrite)
+                    overwrite,
+                    test)
 
