@@ -34,7 +34,7 @@ def symlink(cur, json, src, dst, title, overwrite=False, test=False):
             os.path.isdir(src),
             os.path.islink(src)]
             ):
-        click.echo("ERROR: The requested source doesnt exist",err)
+        click.echo("The requested source doesnt exist",err)
         click.echo(title)
         click.echo(src)
         return
@@ -110,7 +110,7 @@ def trash(dst):
               help="Overwrite all files")
 def cli(test, cfg_file, overwrite):
 
-    """Synchronize Settings will synchronize your app Settings according to a sync_settings.json"""
+    """Synchronize your app Settings"""
 
     # Path with the settings
     settings_dir = "~/Settings"
