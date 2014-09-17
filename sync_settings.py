@@ -22,7 +22,7 @@ from send2trash import send2trash  # https://github.com/hsoft/send2trash
 
 def symlink(cur, json, src, dst, title, overwrite=False):
 
-    # Grab the path from the json parent dir
+    # Grab the full source path from the json file and append the parent dir
     json = os.path.dirname(json)
     src = json + "/" + src
 
@@ -121,6 +121,8 @@ def trash(dst):
 @click.option('--overwrite', default=False, is_flag=True,
               help="Overwrite all files")
 def cli(test, cfg_file, overwrite):
+
+    """Synchronize Settings will synchronize your app Settings according to a sync_settings.json"""
 
     # Path with the settings
     settings_dir = "~/Settings"
