@@ -158,7 +158,7 @@ def cli(test, cfg_file, overwrite, settings_dir):
 
     # If there aren't any config files exit the script
     if not(cfg):
-        errmsg("No %s configuration files found!" % cfg_file)
+        errmsg("No %s configuration files found! in %s" % (cfg_file, settings_dir))
         return
 
     #-------------------------------------------------------------------------#
