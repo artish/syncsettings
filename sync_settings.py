@@ -141,9 +141,7 @@ def cli(test, cfg_file, overwrite, settings_dir):
 
     """Synchronize your app Settings"""
 
-    # Check if there is either a symlink or a dir ~/Settings
-    # After that check if there is a Settings dir in the root dir of the script
-    # If none of these exist, exit the script
+    # Check if the given settings dir exists
     settings_dir = os.path.expanduser(settings_dir)
     if (os.path.islink(settings_dir)):
         # Expand the user and find the symlink target path
@@ -160,7 +158,7 @@ def cli(test, cfg_file, overwrite, settings_dir):
 
     # If there aren't any config files exit the script
     if not(cfg):
-        errmsg("No %s files found!" % cfg_file)
+        errmsg("No %s configuration files found!" % cfg_file)
         return
 
     #-------------------------------------------------------------------------#
