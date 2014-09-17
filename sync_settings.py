@@ -126,11 +126,11 @@ def errmsg(msg):
 
 @click.option('--test', is_flag=True, help="Testing Mode")
 
-@click.option('--cfg_file', default="sync_settings.json", 
-              help="Alternate name for the configuration file")
-
 @click.option('--overwrite', default=False, is_flag=True,
               help="Overwrite all files")
+
+@click.option('--cfg_file', default="sync_settings.json", 
+              help="Set an Alternate name for the configuration file")
 
 def cli(test, cfg_file, overwrite):
 
