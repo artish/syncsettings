@@ -130,19 +130,21 @@ def errmsg(msg):
               help="Overwrite all files")
 
 @click.option('--cfg_file', default="sync_settings.json", 
-              help="Set an Alternate name for the configuration file")
+              help="Alternate name for the configuration file")
 
-def cli(test, cfg_file, overwrite):
+@click.option('--settings_dir', default="~/Settings",
+              help="Set an alternate dir for your settings.                The default folder is ~/Settings")
+# Sucky workaround to show the 2nd sentence in the next line because of the automatic
+# text wrapping
+
+def cli(test, cfg_file, overwrite, settings_dir):
 
     """Synchronize your app Settings"""
-
-    # Path with the settings
-    settings_dir = "~/Settings"
-    settings_dir = os.path.expanduser(settings_dir)
 
     # Check if there is either a symlink or a dir ~/Settings
     # After that check if there is a Settings dir in the root dir of the script
     # If none of these exist, exit the script
+    settings_dir = os.path.expanduser(settings_dir)
     if (os.path.islink(settings_dir)):
         # Expand the user and find the symlink target path
         settings_dir = (os.path.realpath(os.path.expanduser(settings_dir)))
@@ -150,7 +152,7 @@ def cli(test, cfg_file, overwrite):
         # Expand the user and find the symlink target path
         settings_dir = (os.path.expanduser(settings_dir))
     else:
-        errmsg("No Settings folder found in the home dir!")
+        errmsg("No Settings found in %s" % settings_dir)
         return
 
     # Locate all the config files in the given directory
