@@ -28,7 +28,7 @@ def symlink(cur, json, src, dst, title, overwrite=False):
 
     dst = os.path.expanduser(dst)
 
-    # Exit the application if the source doesn't exist
+    # Check if the source file exists
     if not any([
             os.path.isfile(src),
             os.path.isdir(src),
@@ -39,32 +39,26 @@ def symlink(cur, json, src, dst, title, overwrite=False):
         click.echo(src)
         return
 
-    # If the target is an existing file or folder
-    # Ask to overwrite it or to skip it
+    # Prompt the User to either overwrite existing files or skip them
     if any([
         os.path.isfile(dst),
         os.path.isdir(dst),
         os.path.islink(dst)]
             ):
 
-          # TODO 001: Remove this unecessary if condition
-
-          # When overwrite is "y" or in testing mode
-          # Overwrite the file
             if not overwrite:
-
-                print "File " + dst + " already exists."
-
-                # Check the prompt value for
-                #
-                # a: Overwrite all files and don't ask anymore
-                # y: Continue the function and overwrite
-                # n: Exit the function and don't overwrite
-                #
-                # On any other input repeat the prompt
 
                 prompt = ""
 
+                click.echo("File " + dst + " already exists.")
+
+                # Overwrite Prompt
+                #
+                # a: Overwrite all files and don't ask anymore
+                # y: Continue the symlink function and overwrite
+                # n: Exit the symlink function and don't overwrite
+                #
+                # On any other input repeat the prompt
                 while all([
                     prompt != "y",
                     prompt != "n",
@@ -81,20 +75,9 @@ def symlink(cur, json, src, dst, title, overwrite=False):
                     elif (prompt == "y"):
                         pass   # Overwrite only this file
 
-    # Trash the resulting destination file or dir
-    # And delete symlinks so they don't crowd the trashbin
-    if (os.path.islink(dst)):
-        os.unlink(dst)
-    elif any([os.path.isfile(dst), os.path.isdir(dst)]):
-        send2trash(dst)
-
-    # Create the symlink
+    # Trash the existing destination if available and symlink the source
+    trash(dst)
     os.symlink(src, dst)
-
-    # Print the symlink creation information
-    # print "Creating SymLink: "
-    # print "  Src: " + src
-    # print "  Dst: " + dst + "\n"
 
     return overwrite
 
