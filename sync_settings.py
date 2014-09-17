@@ -12,6 +12,8 @@ import sys
 import glob
 import json
 import fnmatch
+import errno
+
 
 # Custom Modules
 import click
@@ -84,9 +86,13 @@ def symlink(cur, json, src, dst, title, overwrite=False, test=False):
         return overwrite
 
 
-    # Trash the existing destination if available and symlink the source
-    trash(dst)
-    os.symlink(src, dst)
+    try:
+        # Trash the existing destination if available and symlink the source
+        trash(dst)
+        os.symlink(src, dst)
+    except OSError as exception:
+        if exception.errno != errno.EEXIST:
+            errmsg("The destinations parent dir doesn't exist!\n%s" % dst)
 
     return overwrite
 
