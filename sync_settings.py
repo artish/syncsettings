@@ -11,6 +11,8 @@ import os
 import sys
 import glob
 import json
+import fnmatch
+import errno
 
 # Custom Modules
 import click
@@ -20,7 +22,7 @@ from send2trash import send2trash  # https://github.com/hsoft/send2trash
 # Functions
 #=============================================================================#
 
-def symlink(cur, json, src, dst, title, overwrite=False):
+def symlink(cur, json, src, dst, title, overwrite=False, test=False):
 
     # Grab the full source path from the json file and append the parent dir
     json = os.path.dirname(json)
@@ -34,9 +36,10 @@ def symlink(cur, json, src, dst, title, overwrite=False):
             os.path.isdir(src),
             os.path.islink(src)]
             ):
-        click.echo("ERROR: The requested source doesnt exist",err)
-        click.echo(title)
-        click.echo(src)
+        click.echo()
+        errmsg("The requested source doesnt exist: %s" % title)
+        click.secho(src, fg="red")
+        click.echo()
         return
 
     # Prompt the User to either overwrite existing files or skip them
@@ -75,9 +78,19 @@ def symlink(cur, json, src, dst, title, overwrite=False):
                     elif (prompt == "y"):
                         pass   # Overwrite only this file
 
-    # Trash the existing destination if available and symlink the source
-    trash(dst)
-    os.symlink(src, dst)
+    if test:
+        click.echo("Creating a Symlink for the file: ")
+        click.echo("  %s" % src)
+        click.echo("  %s\n" % dst)
+        return overwrite
+
+    try:
+        # Trash the existing destination and symlink the source
+        trash(dst)
+        os.symlink(src, dst)
+    except OSError as exception:
+        if exception.errno != errno.EEXIST:
+            errmsg("The destinations parent dir doesn't exist!\n%s" % dst)
 
     return overwrite
 
@@ -91,27 +104,49 @@ def trash(dst):
     elif os.path.islink(dst):
         os.unlink(dst)
 
+
+def locate(src,pattern):
+
+    """Locate files matching a pattern in a folder and its subfolders"""
+
+    matches = []
+    for root, dirnames, filenames in os.walk(src):
+      for filename in fnmatch.filter(filenames, pattern):
+          matches.append(os.path.join(root, filename))
+
+    return matches
+
+def errmsg(msg):
+
+    """Red error message with ERROR prefix"""
+
+    click.secho("ERROR: %s" % msg, fg='red', err=True)
+
 #=============================================================================#
 # Main
 #=============================================================================#
 
 @click.command()
+
 @click.option('--test', is_flag=True, help="Testing Mode")
-@click.option('--cfg_file', default="sync_settings.json", 
-              help="Alternate name for the configuration file")
+
 @click.option('--overwrite', default=False, is_flag=True,
               help="Overwrite all files")
-def cli(test, cfg_file, overwrite):
 
-    """Synchronize Settings will synchronize your app Settings according to a sync_settings.json"""
+@click.option('--cfg_file', default="sync_settings.json", 
+              help="Alternate name for the configuration file")
 
-    # Path with the settings
-    settings_dir = "~/Settings"
+@click.option('--settings_dir', default="~/Settings",
+              help="Set an alternate dir for your settings.                The default folder is ~/Settings")
+# Sucky workaround to show the 2nd sentence in the next line because of the automatic
+# text wrapping
+
+def cli(test, cfg_file, overwrite, settings_dir):
+
+    """Synchronize your app Settings"""
+
+    # Check if the given settings dir exists
     settings_dir = os.path.expanduser(settings_dir)
-
-    # Check if there is either a symlink or a dir ~/Settings
-    # After that check if there is a Settings dir in the root dir of the script
-    # If none of these exist, exit the script
     if (os.path.islink(settings_dir)):
         # Expand the user and find the symlink target path
         settings_dir = (os.path.realpath(os.path.expanduser(settings_dir)))
@@ -119,23 +154,15 @@ def cli(test, cfg_file, overwrite):
         # Expand the user and find the symlink target path
         settings_dir = (os.path.expanduser(settings_dir))
     else:
-        print "No Settings folder found in either ~/ or the script dir!"
+        errmsg("No Settings found in %s" % settings_dir)
         return
 
-      # Get all sync setting files
-      # Or just the test folder in test mode
-    if test:
-        cfg = [settings_dir + '/test/' + cfg_file]
-    else:
-        # TODO 002: Replace this with a walk function
-        cfg = glob.glob(settings_dir + '*/' + cfg_file)
-        cfg += glob.glob(settings_dir + '*/*/' + cfg_file)
-        cfg += glob.glob(settings_dir + '*/*/*/' + cfg_file)
-        cfg += glob.glob(settings_dir + '*/*/*/*/' + cfg_file)
+    # Locate all the config files in the given directory
+    cfg = locate(settings_dir,cfg_file)
 
     # If there aren't any config files exit the script
     if not(cfg):
-        print ("No %s files found!" % cfg_file)
+        errmsg("No %s configuration files found! in %s" % (cfg_file, settings_dir))
         return
 
     #-------------------------------------------------------------------------#
@@ -145,23 +172,30 @@ def cli(test, cfg_file, overwrite):
     # Loop through the configuration files and create the symlinks
     for x in cfg:
 
-        # Load the data from the json files into data
+        # Load data from the json files and ignore invalid json files
+        data = ""
         json_data = open(x)
-        data = json.load(json_data)
+        try:
+            data = json.load(json_data)
+        except ValueError, e:
+            errmsg("Faulty settings file JSON \n %s\n" % x)
         json_data.close()
 
-        # Get the folders to trash if they are available
-        if "trash" in data:
-            for t in data["trash"]:
-                trash(t)
+        if data:
 
-        if "symlink" in data:
-            for d in data["symlink"]:
+            # Get the folders to trash if they are available
+            if "trash" in data:
+                for t in data["trash"]:
+                    trash(t)
 
-                overwrite = symlink(
-                    settings_dir,
-                    x,
-                    d["src"], d["dst"],
-                    d["title"],
-                    overwrite)
+            if "symlink" in data:
+                for d in data["symlink"]:
+
+                    overwrite = symlink(
+                        settings_dir,
+                        x,
+                        d["src"], d["dst"],
+                        d["title"],
+                        overwrite,
+                        test)
 
