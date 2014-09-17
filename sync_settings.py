@@ -170,8 +170,15 @@ def cli(test, cfg_file, overwrite, settings_dir):
 
         # Load the data from the json files into data
         json_data = open(x)
-        data = json.load(json_data)
-        json_data.close()
+        
+        try:
+            data = json.load(json_data)
+            json_data.close()
+        except ValueError:
+            errmsg("Faulty settings file JSON \n %s" % x)
+            json_data.close()
+            return
+
 
         # Get the folders to trash if they are available
         if "trash" in data:
