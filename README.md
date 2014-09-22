@@ -7,6 +7,14 @@ Not only will this secure this your app settings, it will also prevent nasty dup
 
 ## VirtualEnv Instructions
 
+### Installation & Fix:
+
+  1. Fix & Reinstall Python with brew
+     [osx - Homebrew , python installing - Stack Overflow](http://stackoverflow.com/questions/13088998/homebrew-python-installing)
+
+  2. Install Python Environment    
+     [Python Development Environment on Mac OS X Mavericks 10.9 | Hacker Codex](http://hackercodex.com/guide/python-development-environment-on-mac-osx/)
+
 ### Setup:
 
   1. Set up the virtual environment:    
