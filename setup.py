@@ -8,7 +8,7 @@ setup(
     description = 'Synchronize your settings',
     packages = ['sync_settings'],
     install_requires = [
-        'Click',
+        'click',
         'send2trash'
     ],
     entry_points = {

@@ -18,7 +18,7 @@
 			],
 			"folder_exclude_patterns":
 			[
-				"SyncSettings.egg-info",
+				"*.egg-info",
 				"virtpy",
 				"lib",
 				".vim",
