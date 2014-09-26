@@ -1,6 +1,7 @@
 .DS_STORE
 *.sublime-workspace
 *.pyc
+*.egg-info
 
 # Virtualenv
 virtpy/.Python
