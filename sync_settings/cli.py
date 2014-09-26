@@ -141,7 +141,7 @@ def errmsg(msg):
 # Sucky workaround to show the 2nd sentence in the next line because of the automatic
 # text wrapping
 
-def run(test, cfg_file, overwrite, settings_dir):
+def cli(test, cfg_file, overwrite, settings_dir):
 
     """Synchronize your app Settings"""
 

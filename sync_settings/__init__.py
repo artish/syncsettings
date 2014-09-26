@@ -1,1 +1,1 @@
-import cli
+from .cli import *
