@@ -1,0 +1,6 @@
+#!/usr/bin/env python
+
+import sync_settings as ss
+
+if __name__ == '__main__':
+	ss.cli.run()
