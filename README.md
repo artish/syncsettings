@@ -5,6 +5,17 @@ This script will synchronize settings of all your apps in git repository.
 
 Not only will this secure this your app settings, it will also prevent nasty duplication synchronisation errors when synching settings via Dropbox for instance.
 
+## Installation & Upgrades
+
+  For now the script must be downloaded and installed from the git repository.
+
+  ```shell
+  git clone git@bitbucket.org:artish/synchronize-settings-script.git
+  virtualenv virtpy
+  pip install . --upgrade
+  ```
+
+
 ## VirtualEnv Instructions
 
 ### Installation & Fix:
