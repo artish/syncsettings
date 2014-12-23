@@ -215,22 +215,32 @@ def cli(test, cfg_file, overwrite, list, single, settings_dir):
 
     if single:
 
+        click.echo(single)
+            
+
         if single.isdigit(): 
             number = int(single) - 1
             try:
                 cfg = cfg[number]
             except IndexError:
                 errmsg("Invalid number")
-                
+                return
         elif isinstance(single, basestring):
-            click.echo("You've Got A String")
+
+            found_item = False
+            for x in cfg:
+                data = parse_data(x)
+                if data["App"] == single:
+                    cfg = cfg[cfg.index(x)]
+                    found_item = True
+
+            if found_item == False:
+                errmsg("Invalid Input")                        
+                return
+
         else:
             errmsg("Invalid Input")
-
-
-    click.echo(cfg)
-    return
-
+            return
 
     #---------------------------------------------------------------------------#
     # Regular Mode
