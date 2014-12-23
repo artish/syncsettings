@@ -138,6 +138,7 @@ def errmsg(msg):
 
     click.secho("ERROR: %s" % msg, fg='red', err=True)
 
+
 #=============================================================================#
 # Main
 #=============================================================================#
@@ -213,26 +214,32 @@ def cli(test, cfg_file, overwrite, list, single, settings_dir):
     # Single Mode
     #---------------------------------------------------------------------------#
 
+    # Only symlink a given object from the arguments
+    # checking first if the argument exists in the list, then removing every
+    # other element from the cfg list except the chosen one
     if single:
-
-        click.echo(single)
-            
 
         if single.isdigit(): 
             number = int(single) - 1
             try:
-                cfg = cfg[number]
+                new_cfg = cfg[number]
+                del cfg[:]
+                cfg.append(new_cfg)
             except IndexError:
                 errmsg("Invalid number")
                 return
+
         elif isinstance(single, basestring):
 
             found_item = False
+
             for x in cfg:
                 data = parse_data(x)
                 if data["App"] == single:
-                    cfg = cfg[cfg.index(x)]
-                    found_item = True
+                    new_cfg = cfg[cfg.index(x)]
+                    del cfg[:]
+                    cfg = new_cfg
+                    cfg.append(new_cfg)
 
             if found_item == False:
                 errmsg("Invalid Input")                        
@@ -241,6 +248,10 @@ def cli(test, cfg_file, overwrite, list, single, settings_dir):
         else:
             errmsg("Invalid Input")
             return
+
+
+    click.echo(cfg)
+
 
     #---------------------------------------------------------------------------#
     # Regular Mode
