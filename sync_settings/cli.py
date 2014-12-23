@@ -22,6 +22,21 @@ from send2trash import send2trash  # https://github.com/hsoft/send2trash
 # Functions
 #=============================================================================#
 
+def parse_data(cfg):
+
+    """Parse a given json file and return an data Array"""
+
+    data = ""
+    json_data = open(cfg)
+    try:
+        data = json.load(json_data)
+    except ValueError, e:
+        errmsg("Faulty settings file JSON \n %s\n" % cfg)
+    json_data.close()
+
+    return data
+
+
 def symlink(cur, json, src, dst, title, overwrite=False, test=False):
 
     # Grab the full source path from the json file and append the parent dir
@@ -169,24 +184,26 @@ def cli(test, cfg_file, overwrite, list, single, settings_dir):
         errmsg("No %s configuration files found! in %s" % (cfg_file, settings_dir))
         return
 
-    #-------------------------------------------------------------------------#
-    # Symlink Iteration
-    #-------------------------------------------------------------------------#
+    #---------------------------------------------------------------------------#
+    # List Mode
+    #---------------------------------------------------------------------------#
+
+    if list:
+
+        for x in cfg:
+            click.echo(x)
+
+        return
+
+    #---------------------------------------------------------------------------#
+    # Regular Mode
+    #---------------------------------------------------------------------------#
 
     # Loop through the configuration files and create the symlinks
     for x in cfg:
 
-        # Load data from the json files and ignore invalid json files
-        data = ""
-        json_data = open(x)
-        try:
-            data = json.load(json_data)
-        except ValueError, e:
-            errmsg("Faulty settings file JSON \n %s\n" % x)
-        json_data.close()
-
+        data = parse_data(x)
         if data:
-
             # Get the folders to trash if they are available
             if "trash" in data:
                 for t in data["trash"]:
