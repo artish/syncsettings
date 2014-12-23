@@ -14,7 +14,8 @@ setup(
     entry_points = {
         'console_scripts': [
             'sync_settings = sync_settings:cli',
-            'ss = sync_settings:cli'
+            'ss = sync_settings:cli',
+            'ss_test = sync_settings:cli'
         ]
     }
 )

@@ -26,7 +26,7 @@ Not only will this secure this your app settings, it will also prevent nasty dup
   2. Activate the virtual environment:
 
     ```shell
-    . sync/bin/activate
+    . virtpy/bin/activate
     ```
     
     To deactivate just run:    

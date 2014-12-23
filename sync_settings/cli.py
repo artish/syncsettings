@@ -13,6 +13,7 @@ import glob
 import json
 import fnmatch
 import errno
+import math
 
 # Custom Modules
 import click
@@ -21,6 +22,21 @@ from send2trash import send2trash  # https://github.com/hsoft/send2trash
 #=============================================================================#
 # Functions
 #=============================================================================#
+
+def parse_data(cfg):
+
+    """Parse a given json file and return an data Array"""
+
+    data = ""
+    json_data = open(cfg)
+    try:
+        data = json.load(json_data)
+    except ValueError, e:
+        errmsg("Faulty settings file JSON \n %s\n" % cfg)
+    json_data.close()
+
+    return data
+
 
 def symlink(cur, json, src, dst, title, overwrite=False, test=False):
 
@@ -122,6 +138,7 @@ def errmsg(msg):
 
     click.secho("ERROR: %s" % msg, fg='red', err=True)
 
+
 #=============================================================================#
 # Main
 #=============================================================================#
@@ -129,6 +146,10 @@ def errmsg(msg):
 @click.command()
 
 @click.option('--test', is_flag=True, help="Testing Mode")
+
+@click.option('--list', is_flag=True, help="List All Settings")
+
+@click.option('--single', help="Synchronize the Settings for a single configuration file")
 
 @click.option('--overwrite', default=False, is_flag=True,
               help="Overwrite all files")
@@ -141,7 +162,7 @@ def errmsg(msg):
 # Sucky workaround to show the 2nd sentence in the next line because of the automatic
 # text wrapping
 
-def cli(test, cfg_file, overwrite, settings_dir):
+def cli(test, cfg_file, overwrite, list, single, settings_dir):
 
     """Synchronize your app Settings"""
 
@@ -165,24 +186,83 @@ def cli(test, cfg_file, overwrite, settings_dir):
         errmsg("No %s configuration files found! in %s" % (cfg_file, settings_dir))
         return
 
-    #-------------------------------------------------------------------------#
-    # Symlink Iteration
-    #-------------------------------------------------------------------------#
+    #---------------------------------------------------------------------------#
+    # List Mode
+    #---------------------------------------------------------------------------#
+
+    # Print out a list of available configurations and numberize them
+    # to be used in the --single parameter option
+    if list:
+
+        for x in cfg:
+            
+            # Add 1 to the counter index, to make it more user friendly
+            counter = cfg.index(x) + 1
+            
+            # Hacky even alignment of the list
+            spaces = ""
+            if (len(cfg) >= 10 and counter < 10):
+                spaces += " " 
+
+            data = parse_data(x)
+            if data["App"]: 
+                click.echo("%s: %s%s" % (counter, spaces, data["App"]))
+
+        return
+
+    #---------------------------------------------------------------------------#
+    # Single Mode
+    #---------------------------------------------------------------------------#
+
+    # Only symlink a given object from the arguments
+    # checking first if the argument exists in the list, then removing every
+    # other element from the cfg list except the chosen one
+    if single:
+
+        if single.isdigit(): 
+            number = int(single) - 1
+            try:
+                new_cfg = cfg[number]
+                del cfg[:]
+                cfg.append(new_cfg)
+            except IndexError:
+                errmsg("Invalid number")
+                return
+
+        elif isinstance(single, basestring):
+
+            found_item = False
+
+            for x in cfg:
+                data = parse_data(x)
+                if data["App"] == single:
+                    new_cfg = cfg[cfg.index(x)]
+                    del cfg[:]
+                    cfg = new_cfg
+                    cfg.append(new_cfg)
+
+            if found_item == False:
+                errmsg("Invalid Input")                        
+                return
+
+        else:
+            errmsg("Invalid Input")
+            return
+
+
+    click.echo(cfg)
+
+
+    #---------------------------------------------------------------------------#
+    # Regular Mode
+    #---------------------------------------------------------------------------#
 
     # Loop through the configuration files and create the symlinks
     for x in cfg:
 
-        # Load data from the json files and ignore invalid json files
-        data = ""
-        json_data = open(x)
-        try:
-            data = json.load(json_data)
-        except ValueError, e:
-            errmsg("Faulty settings file JSON \n %s\n" % x)
-        json_data.close()
+        data = parse_data(x)
 
         if data:
-
             # Get the folders to trash if they are available
             if "trash" in data:
                 for t in data["trash"]:
