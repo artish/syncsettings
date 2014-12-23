@@ -148,7 +148,7 @@ def errmsg(msg):
 
 @click.option('--list', is_flag=True, help="List All Settings")
 
-@click.option('--single', is_flag=True, help="Synchronize the Settings for a single configuration file")
+@click.option('--single', help="Synchronize the Settings for a single configuration file")
 
 @click.option('--overwrite', default=False, is_flag=True,
               help="Overwrite all files")
@@ -208,6 +208,29 @@ def cli(test, cfg_file, overwrite, list, single, settings_dir):
                 click.echo("%s: %s%s" % (counter, spaces, data["App"]))
 
         return
+
+    #---------------------------------------------------------------------------#
+    # Single Mode
+    #---------------------------------------------------------------------------#
+
+    if single:
+
+        if single.isdigit(): 
+            number = int(single) - 1
+            try:
+                cfg = cfg[number]
+            except IndexError:
+                errmsg("Invalid number")
+                
+        elif isinstance(single, basestring):
+            click.echo("You've Got A String")
+        else:
+            errmsg("Invalid Input")
+
+
+    click.echo(cfg)
+    return
+
 
     #---------------------------------------------------------------------------#
     # Regular Mode
