@@ -130,6 +130,10 @@ def errmsg(msg):
 
 @click.option('--test', is_flag=True, help="Testing Mode")
 
+@click.option('--list', is_flag=True, help="List All Settings")
+
+@click.option('--single', is_flag=True, help="Synchronize the Settings for a single configuration file")
+
 @click.option('--overwrite', default=False, is_flag=True,
               help="Overwrite all files")
 
@@ -141,7 +145,7 @@ def errmsg(msg):
 # Sucky workaround to show the 2nd sentence in the next line because of the automatic
 # text wrapping
 
-def cli(test, cfg_file, overwrite, settings_dir):
+def cli(test, cfg_file, overwrite, list, single, settings_dir):
 
     """Synchronize your app Settings"""
 
