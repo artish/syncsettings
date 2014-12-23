@@ -189,6 +189,8 @@ def cli(test, cfg_file, overwrite, list, single, settings_dir):
     # List Mode
     #---------------------------------------------------------------------------#
 
+    # Print out a list of available configurations and numberize them
+    # to be used in the --single parameter option
     if list:
 
         for x in cfg:
@@ -196,9 +198,14 @@ def cli(test, cfg_file, overwrite, list, single, settings_dir):
             # Add 1 to the counter index, to make it more user friendly
             counter = cfg.index(x) + 1
             
+            # Hacky even alignment of the list
+            spaces = ""
+            if (len(cfg) >= 10 and counter < 10):
+                spaces += " " 
+
             data = parse_data(x)
             if data["App"]: 
-                click.echo("%s: %s" % (counter, data["App"]))
+                click.echo("%s: %s%s" % (counter, spaces, data["App"]))
 
         return
 
