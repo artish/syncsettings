@@ -189,9 +189,10 @@ def cli(test, cfg_file, overwrite, list, single, settings_dir):
     #---------------------------------------------------------------------------#
 
     if list:
-
         for x in cfg:
-            click.echo(x)
+            data = parse_data(x)
+            if data["App"]: 
+                click.echo(data["App"])
 
         return
 
@@ -203,6 +204,7 @@ def cli(test, cfg_file, overwrite, list, single, settings_dir):
     for x in cfg:
 
         data = parse_data(x)
+
         if data:
             # Get the folders to trash if they are available
             if "trash" in data:
