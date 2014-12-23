@@ -13,6 +13,7 @@ import glob
 import json
 import fnmatch
 import errno
+import math
 
 # Custom Modules
 import click
@@ -189,10 +190,15 @@ def cli(test, cfg_file, overwrite, list, single, settings_dir):
     #---------------------------------------------------------------------------#
 
     if list:
+
         for x in cfg:
+            
+            # Add 1 to the counter index, to make it more user friendly
+            counter = cfg.index(x) + 1
+            
             data = parse_data(x)
             if data["App"]: 
-                click.echo(data["App"])
+                click.echo("%s: %s" % (counter, data["App"]))
 
         return
 
