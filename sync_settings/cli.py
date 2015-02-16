@@ -38,7 +38,7 @@ def parse_data(cfg):
     return data
 
 
-def symlink(cur, json, mode, src, dst, title, overwrite=False, test=False):
+def symlink(cur, json, data, mode, overwrite=False, test=False):
 
     """ Copy, Symlink or Rsync Files read from a json_data
 
@@ -51,6 +51,11 @@ def symlink(cur, json, mode, src, dst, title, overwrite=False, test=False):
     overwrite -- Overwrite modus
     test      -- Test Modus, preview without executing
     """
+
+    src = data["src"]
+    dst = data["dst"]
+    if data["title"]:
+        title = data["title"]
 
     # Grab the full source path from the json file and append the parent dir
     json = os.path.dirname(json)
@@ -285,9 +290,8 @@ def cli(test, cfg_file, overwrite, list, single, settings_dir):
                     overwrite = symlink(
                         settings_dir,
                         x,
+                        d,
                         "symlink",
-                        d["src"], d["dst"],
-                        d["title"],
                         overwrite,
                         test)
 
