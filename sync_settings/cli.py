@@ -14,6 +14,7 @@ import json
 import fnmatch
 import errno
 import math
+import shutil
 
 # Custom Modules
 import click
@@ -118,21 +119,28 @@ def copy(cur, json, data, mode, overwrite=False, test=False):
     if check_if_file_exists(dst) and not overwrite:
         overwrite = prompt_to_overwrite(overwrite, dst)
 
+    # Display Additional information
     if test:
-        click.echo("Creating a Symlink for the file: ")
+        click.echo("Creating a %s for the file: " % mode)
         click.echo("  %s" % src)
         click.echo("  %s\n" % dst)
         return overwrite
 
     try:
-        # Trash the existing destination and symlink the source
-        trash(dst)
-        os.symlink(src, dst)
+        if (mode == "symlink"):
+            trash(dst)
+            os.symlink(src, dst)
+            return overwrite
+        elif (mode == "rsync"):
+            trash(dst)
+            if os.path.isdir(src):
+                shutil.copytree(src, dst)
+            else:
+                shutil.copy(src, dst)
+            return overwrite
     except OSError as exception:
         if exception.errno != errno.EEXIST:
             errmsg("The destinations parent dir doesn't exist!\n%s" % dst)
-
-    return overwrite
 
 
 def trash(dst):
@@ -303,14 +311,14 @@ def cli(test, cfg_file, overwrite, list, single, settings_dir):
                         overwrite,
                         test)
 
-            # if "rsync" in data:
+            if "rsync" in data:
 
-            #     for data in data["rsync"]:
-            #         overwrite = copy(
-            #             settings_dir,
-            #             x,
-            #             data,
-            #             "symlink",
-            #             overwrite,
-            #             test)
+                for data in data["rsync"]:
+                    overwrite = copy(
+                        settings_dir,
+                        x,
+                        data,
+                        "rsync",
+                        overwrite,
+                        test)
 
