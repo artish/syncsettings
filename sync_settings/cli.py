@@ -49,6 +49,9 @@ def check_if_file_exists(file):
         return True
 
 def prompt_to_overwrite(overwrite, file):
+
+    """Check to overwrite the given file"""
+
     if not overwrite:
         prompt = ""
         click.echo("File " + file + " already exists.")
@@ -78,7 +81,7 @@ def prompt_to_overwrite(overwrite, file):
                 return overwrite
 
 
-def symlink(cur, json, data, mode, overwrite=False, test=False):
+def copy(cur, json, data, mode, overwrite=False, test=False):
 
     """ Copy, Symlink or Rsync Files read from a json_data
 
@@ -290,12 +293,24 @@ def cli(test, cfg_file, overwrite, list, single, settings_dir):
                     trash(t)
 
             if "symlink" in data:
+                
                 for data in data["symlink"]:
-                    overwrite = symlink(
+                    overwrite = copy(
                         settings_dir,
                         x,
                         data,
                         "symlink",
                         overwrite,
                         test)
+
+            # if "rsync" in data:
+
+            #     for data in data["rsync"]:
+            #         overwrite = copy(
+            #             settings_dir,
+            #             x,
+            #             data,
+            #             "symlink",
+            #             overwrite,
+            #             test)
 
