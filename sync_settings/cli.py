@@ -37,6 +37,13 @@ def parse_data(cfg):
 
     return data
 
+def check_if_file_exists(file):
+    if any([
+            os.path.isfile(file),
+            os.path.isdir(file),
+            os.path.islink(file)
+            ]):
+        return True
 
 def symlink(cur, json, data, mode, overwrite=False, test=False):
 
@@ -64,11 +71,7 @@ def symlink(cur, json, data, mode, overwrite=False, test=False):
     dst = os.path.expanduser(dst)
 
     # Check if the source file exists
-    if not any([
-            os.path.isfile(src),
-            os.path.isdir(src),
-            os.path.islink(src)]
-            ):
+    if not check_if_file_exists(src):
         click.echo()
         errmsg("The requested source doesnt exist: %s" % title)
         click.secho(src, fg="red")
@@ -76,11 +79,7 @@ def symlink(cur, json, data, mode, overwrite=False, test=False):
         return
 
     # Prompt the User to either overwrite existing files or skip them
-    if any([
-        os.path.isfile(dst),
-        os.path.isdir(dst),
-        os.path.islink(dst)]
-            ):
+    if check_if_file_exists(dst):
 
             if not overwrite:
 
@@ -286,11 +285,11 @@ def cli(test, cfg_file, overwrite, list, single, settings_dir):
                     trash(t)
 
             if "symlink" in data:
-                for d in data["symlink"]:
+                for data in data["symlink"]:
                     overwrite = symlink(
                         settings_dir,
                         x,
-                        d,
+                        data,
                         "symlink",
                         overwrite,
                         test)
