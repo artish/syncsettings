@@ -38,12 +38,45 @@ def parse_data(cfg):
     return data
 
 def check_if_file_exists(file):
+
+    """Check if a given file exists either as a file, dir or symlink"""
+
     if any([
             os.path.isfile(file),
             os.path.isdir(file),
             os.path.islink(file)
             ]):
         return True
+
+def prompt_to_overwrite(overwrite, file):
+    if not overwrite:
+        prompt = ""
+        click.echo("File " + file + " already exists.")
+
+        # Overwrite Prompt
+        #
+        # a: Overwrite all files and don't ask anymore
+        # y: Continue the symlink function and overwrite
+        # n: Exit the symlink function and don't overwrite
+        #
+        # On any other input repeat the prompt
+        while all([
+            prompt != "y",
+            prompt != "n",
+            prompt != "a"
+                ]):
+
+            prompt = raw_input("Overwrite (y/n/a): ")
+
+            if (prompt == "a"):
+                overwrite = True  # Overwrite All
+                return overwrite
+            elif (prompt == "n"):
+                overwrite = False
+                return overwrite
+            elif (prompt == "y"):
+                return overwrite
+
 
 def symlink(cur, json, data, mode, overwrite=False, test=False):
 
@@ -70,7 +103,7 @@ def symlink(cur, json, data, mode, overwrite=False, test=False):
 
     dst = os.path.expanduser(dst)
 
-    # Check if the source file exists
+    # Cancel when the source file doesn't exist
     if not check_if_file_exists(src):
         click.echo()
         errmsg("The requested source doesnt exist: %s" % title)
@@ -79,36 +112,8 @@ def symlink(cur, json, data, mode, overwrite=False, test=False):
         return
 
     # Prompt the User to either overwrite existing files or skip them
-    if check_if_file_exists(dst):
-
-            if not overwrite:
-
-                prompt = ""
-
-                click.echo("File " + dst + " already exists.")
-
-                # Overwrite Prompt
-                #
-                # a: Overwrite all files and don't ask anymore
-                # y: Continue the symlink function and overwrite
-                # n: Exit the symlink function and don't overwrite
-                #
-                # On any other input repeat the prompt
-                while all([
-                    prompt != "y",
-                    prompt != "n",
-                    prompt != "a"
-                        ]):
-
-                    prompt = raw_input("Overwrite (y/n/a): ")
-
-                    if (prompt == "a"):
-                        overwrite = True  # Overwrite All
-                    elif (prompt == "n"):
-                        overwrite = False
-                        return   # Exit
-                    elif (prompt == "y"):
-                        pass   # Overwrite only this file
+    if check_if_file_exists(dst) and not overwrite:
+        overwrite = prompt_to_overwrite(overwrite, dst)
 
     if test:
         click.echo("Creating a Symlink for the file: ")
