@@ -40,6 +40,18 @@ def parse_data(cfg):
 
 def symlink(cur, json, src, dst, title, overwrite=False, test=False):
 
+    """ Copy, Symlink or Rsync Files read from a json_data
+
+    Keyword Arguments:
+    cur       -- Escaped and expanded dir where all the setting files are stored
+    json      -- Current looping json
+    src       -- Source file specifier
+    dst       -- Destination file specifier
+    title     -- Title of the current application, for better output
+    overwrite -- Overwrite modus
+    test      -- Test Modus, preview without executing
+    """
+
     # Grab the full source path from the json file and append the parent dir
     json = os.path.dirname(json)
     src = json + "/" + src
@@ -270,7 +282,6 @@ def cli(test, cfg_file, overwrite, list, single, settings_dir):
 
             if "symlink" in data:
                 for d in data["symlink"]:
-
                     overwrite = symlink(
                         settings_dir,
                         x,
