@@ -38,7 +38,7 @@ def parse_data(cfg):
     return data
 
 
-def symlink(cur, json, src, dst, title, overwrite=False, test=False):
+def symlink(cur, json, mode, src, dst, title, overwrite=False, test=False):
 
     """ Copy, Symlink or Rsync Files read from a json_data
 
@@ -285,6 +285,7 @@ def cli(test, cfg_file, overwrite, list, single, settings_dir):
                     overwrite = symlink(
                         settings_dir,
                         x,
+                        "symlink",
                         d["src"], d["dst"],
                         d["title"],
                         overwrite,
