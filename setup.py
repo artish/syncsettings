@@ -2,7 +2,7 @@ from setuptools import setup
 
 setup(
     name = 'sync_settings',
-    version = '0.4.5',
+    version = '0.5',
     author = 'Florian Schrödl',
     author_email = 'flo.schroedl@gmail.com',
     description = 'Synchronize your settings',
