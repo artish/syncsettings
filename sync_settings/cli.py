@@ -14,6 +14,7 @@ import json
 import fnmatch
 import errno
 import math
+import shutil
 
 # Custom Modules
 import click
@@ -37,8 +38,68 @@ def parse_data(cfg):
 
     return data
 
+def check_if_file_exists(file):
 
-def symlink(cur, json, src, dst, title, overwrite=False, test=False):
+    """Check if a given file exists either as a file, dir or symlink"""
+
+    if any([
+            os.path.isfile(file),
+            os.path.isdir(file),
+            os.path.islink(file)
+            ]):
+        return True
+
+def prompt_to_overwrite(overwrite, file):
+
+    """Check to overwrite the given file"""
+
+    if not overwrite:
+        prompt = ""
+        click.echo("File " + file + " already exists.")
+
+        # Overwrite Prompt
+        #
+        # a: Overwrite all files and don't ask anymore
+        # y: Continue the symlink function and overwrite
+        # n: Exit the symlink function and don't overwrite
+        #
+        # On any other input repeat the prompt
+        while all([
+            prompt != "y",
+            prompt != "n",
+            prompt != "a"
+                ]):
+
+            prompt = raw_input("Overwrite (y/n/a): ")
+
+            if (prompt == "a"):
+                overwrite = True  # Overwrite All
+                return overwrite
+            elif (prompt == "n"):
+                overwrite = False
+                return overwrite
+            elif (prompt == "y"):
+                return overwrite
+
+
+def copy(cur, json, data, mode, overwrite=False, test=False):
+
+    """ Copy, Symlink or Rsync Files read from a json_data
+
+    Keyword Arguments:
+    cur       -- Escaped and expanded dir where all the setting files are stored
+    json      -- Current looping json
+    src       -- Source file specifier
+    dst       -- Destination file specifier
+    title     -- Title of the current application, for better output
+    overwrite -- Overwrite modus
+    test      -- Test Modus, preview without executing
+    """
+
+    src = data["src"]
+    dst = data["dst"]
+    if data["title"]:
+        title = data["title"]
 
     # Grab the full source path from the json file and append the parent dir
     json = os.path.dirname(json)
@@ -46,12 +107,8 @@ def symlink(cur, json, src, dst, title, overwrite=False, test=False):
 
     dst = os.path.expanduser(dst)
 
-    # Check if the source file exists
-    if not any([
-            os.path.isfile(src),
-            os.path.isdir(src),
-            os.path.islink(src)]
-            ):
+    # Cancel when the source file doesn't exist
+    if not check_if_file_exists(src):
         click.echo()
         errmsg("The requested source doesnt exist: %s" % title)
         click.secho(src, fg="red")
@@ -59,56 +116,31 @@ def symlink(cur, json, src, dst, title, overwrite=False, test=False):
         return
 
     # Prompt the User to either overwrite existing files or skip them
-    if any([
-        os.path.isfile(dst),
-        os.path.isdir(dst),
-        os.path.islink(dst)]
-            ):
+    if check_if_file_exists(dst) and not overwrite:
+        overwrite = prompt_to_overwrite(overwrite, dst)
 
-            if not overwrite:
-
-                prompt = ""
-
-                click.echo("File " + dst + " already exists.")
-
-                # Overwrite Prompt
-                #
-                # a: Overwrite all files and don't ask anymore
-                # y: Continue the symlink function and overwrite
-                # n: Exit the symlink function and don't overwrite
-                #
-                # On any other input repeat the prompt
-                while all([
-                    prompt != "y",
-                    prompt != "n",
-                    prompt != "a"
-                        ]):
-
-                    prompt = raw_input("Overwrite (y/n/a): ")
-
-                    if (prompt == "a"):
-                        overwrite = True  # Overwrite All
-                    elif (prompt == "n"):
-                        overwrite = False
-                        return   # Exit
-                    elif (prompt == "y"):
-                        pass   # Overwrite only this file
-
+    # Display Additional information
     if test:
-        click.echo("Creating a Symlink for the file: ")
+        click.echo("Creating a %s for the file: " % mode)
         click.echo("  %s" % src)
         click.echo("  %s\n" % dst)
         return overwrite
 
     try:
-        # Trash the existing destination and symlink the source
-        trash(dst)
-        os.symlink(src, dst)
+        if (mode == "symlink"):
+            trash(dst)
+            os.symlink(src, dst)
+            return overwrite
+        elif (mode == "rsync"):
+            trash(dst)
+            if os.path.isdir(src):
+                shutil.copytree(src, dst)
+            else:
+                shutil.copy(src, dst)
+            return overwrite
     except OSError as exception:
         if exception.errno != errno.EEXIST:
             errmsg("The destinations parent dir doesn't exist!\n%s" % dst)
-
-    return overwrite
 
 
 def trash(dst):
@@ -269,13 +301,24 @@ def cli(test, cfg_file, overwrite, list, single, settings_dir):
                     trash(t)
 
             if "symlink" in data:
-                for d in data["symlink"]:
-
-                    overwrite = symlink(
+                
+                for data in data["symlink"]:
+                    overwrite = copy(
                         settings_dir,
                         x,
-                        d["src"], d["dst"],
-                        d["title"],
+                        data,
+                        "symlink",
+                        overwrite,
+                        test)
+
+            if "rsync" in data:
+
+                for data in data["rsync"]:
+                    overwrite = copy(
+                        settings_dir,
+                        x,
+                        data,
+                        "rsync",
                         overwrite,
                         test)
 
