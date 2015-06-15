@@ -1,32 +1,9 @@
-Setup Settings Python Script
-============================
+SyncSettings
+============
 
-This script will synchronize settings of all your apps in git repository.
+Synchronise Settings between your UNIX devices.
 
-Not only will this secure this your app settings, it will also prevent nasty duplication synchronisation errors when synching settings via Dropbox for instance.
-
-## Installation & Upgrades
-
-  For now the script must be downloaded and installed from the git repository.
-
-  ```shell
-  git clone git@bitbucket.org:artish/synchronize-settings-script.git
-  virtualenv virtpy
-  pip install . --upgrade
-  ```
-
-
-## VirtualEnv Instructions
-
-### Installation & Fix:
-
-  1. Fix & Reinstall Python with brew
-     [osx - Homebrew , python installing - Stack Overflow](http://stackoverflow.com/questions/13088998/homebrew-python-installing)
-
-  2. Install Python Environment    
-     [Python Development Environment on Mac OS X Mavericks 10.9 | Hacker Codex](http://hackercodex.com/guide/python-development-environment-on-mac-osx/)
-
-### Setup:
+## Development
 
   1. Set up the virtual environment:    
 
@@ -53,29 +30,3 @@ Not only will this secure this your app settings, it will also prevent nasty dup
     ```shell
     pip install --editable .
     ```
-
-
-### Requirements
-
-#### Load Requirements:
-  
-  ```shell
-  pip install -r ./requirements.txt
-  ```
-  
-#### Freeze Requirements:
-
-  ```shell
-  pip freeze -l > ./requirements.txt 
-  ```
-
-## TODO:
-
-  + Check if additional variables like "title" are given.     
-    But don't require them like now
-
-  + Add Copy function for files that can't be symlinked
-
-  + Add a setting where the symlink are added to a folder    
-    Example in the After Effects Folder, where you already have a ton of preinstalled plugins and want to add onto these folders.
-    `/Applications/Adobe\ After\ Effects\ CC\ 2014/Plug-ins`
